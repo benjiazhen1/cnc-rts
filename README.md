@@ -1,45 +1,82 @@
-# C&C RTS - 致敬经典即时战略游戏
+# Command & War 🛩️
 
-基于EA开源的红警/泰伯利亚黎明源码学习的RTS游戏
+一款致敬经典的现代即时战略游戏。
 
-## 技术栈
-- **引擎**: Godot 4.x
+## 🎮 游戏特色
+
+- **建造系统**: 指挥中心 → 发电厂 → 兵营/工厂/机场 → 爆兵
+- **单位系统**: 步兵、坦克、直升机、火箭兵，各有独特属性
+- **兵种相克**: 策略为王，克制关系决定胜负
+- **AI对战**: 智能AI，考验你的战术
+- **战争迷雾**: 探索未知区域，发现敌人
+
+## 🛠️ 技术栈
+
+- **引擎**: Godot 4.2
 - **语言**: GDScript
-- **目标平台**: Web + Steam (Windows)
+- **目标平台**: Windows (Steam) + HTML5 (Web)
 
-## 游戏类型
-即时战略（RTS）- 造基地、爆兵、推塔
+## 📁 项目结构
 
-## 开发进度
-- [ ] 核心RTS机制
-- [ ] 地图编辑器
-- [ ] 兵种AI
-- [ ] 多人联机
+```
+cnc-rts/
+├── scripts/
+│   ├── core/           # 核心系统
+│   ├── entities/       # 单位/建筑实体
+│   ├── systems/        # 游戏系统
+│   ├── ui/            # 界面
+│   └── steam/         # Steam集成
+├── scenes/            # Godot场景
+├── resources/         # 美术/音频资源
+└── .github/workflows/ # CI/CD
+```
 
-## 参考学习
-- EA C&C Remastered Collection 源码
-- TiberianDawn.dll / RedAlert.dll
+## 🎯 开发进度
 
-## 开发进度
+| 模块 | 状态 |
+|------|------|
+| 核心框架 | ✅ 完成 |
+| 建筑系统 | ✅ 完成 |
+| 单位系统 | ✅ 完成 |
+| 寻路算法 | ✅ 完成 |
+| 战斗系统 | ✅ 完成 |
+| AI对手 | ✅ 完成 |
+| 战争迷雾 | ✅ 完成 |
+| 存档系统 | ✅ 完成 |
+| 音效系统 | ✅ 完成 |
+| Steam SDK | ✅ 完成 |
+| 美术资源 | 🔄 进行中 |
+| 音效资源 | ⏳ 待替换 |
 
-### Phase 1: 核心框架 ✅
-- [x] Godot 4.x项目骨架
-- [x] GitHub Actions云编译
-- [ ] 地图系统
-- [ ] 基础RTS单位控制
+## 🚀 构建状态
 
-### Phase 2: 游戏机制
-- [ ] 建筑系统
-- [ ] 兵种生产
-- [ ] 资源采集
-- [ ] AI对战
+| 平台 | 状态 |
+|------|------|
+| Windows EXE | GitHub Actions自动构建 |
+| HTML5 | GitHub Actions自动构建 |
+| Linux | GitHub Actions自动构建 |
 
-### Phase 3: Steam发布
-- [ ] Steam SDK集成
-- [ ] Windows EXE打包
-- [ ] Steam Direct提交
+## 🎨 资源统计
 
-## 学习资源
-- [EA C&C Remastered Collection](https://github.com/electronicarts/CnC_Remastered_Collection)
-- TiberianDawn.dll 源码
-- RedAlert.dll 源码
+- **脚本文件**: 48个 GDScript
+- **精灵图**: 200+ PNG
+- **音效**: 13个 SFX (占位符)
+- **音乐**: 3首 BGM (占位符)
+
+## 📦 发布计划
+
+1. ✅ MVP核心玩法
+2. 🔄 完善美术资源
+3. ⏳ 替换真实音效
+4. ⏳ Steam商店素材
+5. ⏳ 提交审核
+
+## 🔗 相关链接
+
+- [Godot 4.2 下载](https://godotengine.org/download)
+- [Steamworks 文档](https://partner.steamgames.com/doc/sdk)
+- [MiniMax API](https://platform.minimaxi.com)
+
+## 📄 License
+
+MIT License
