@@ -1,36 +1,48 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/game_state.gd" id="1"]
-[ext_resource type="Script" path="res://scripts/systems/terrain_system.gd" id="2"]
-[ext_resource type="Script" path="res://scripts/systems/unit_selection.gd" id="3"]
-[ext_resource type="Script" path="res://scripts/systems/ai_controller.gd" id="4"]
-[ext_resource type="Script" path="res://scripts/systems/building_placer.gd" id="5"]
-[ext_resource type="Script" path="res://scripts/systems/unit_production.gd" id="6"]
-[ext_resource type="Script" path="res://scripts/game.gd" id="7"]
+[ext_resource type="Script" path="res://scripts/game.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/systems/terrain_system.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/systems/unit_selection.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/systems/ai_controller.gd" id="5"]
+[ext_resource type="Script" path="res://scripts/systems/building_placer.gd" id="6"]
+[ext_resource type="Script" path="res://scripts/systems/unit_production.gd" id="7"]
+[ext_resource type="Script" path="res://scripts/systems/pathfinding.gd" id="8"]
+[ext_resource type="Script" path="res://scripts/systems/combat_system.gd" id="9"]
 
 [node name="Game" type="Node2D"]
-script = ExtResource("7")
+script = ExtResource("2")
 
 [node name="Terrain" type="Node2D" parent="."]
-script = ExtResource("2")
+script = ExtResource("3")
 
 [node name="Buildings" type="Node2D" parent="."]
 
 [node name="Units" type="Node2D" parent="."]
 
-[node name="SelectionSystem" type="Node" parent="."]
-script = ExtResource("3")
+[node name="Projectiles" type="Node2D" parent="."]
 
-[node name="AIController" type="Node" parent="."]
+[node name="Explosions" type="Node2D" parent="."]
+
+[node name="Pathfinding" type="Node" parent="."]
+script = ExtResource("8")
+
+[node name="CombatSystem" type="Node" parent="."]
+script = ExtResource("9")
+
+[node name="SelectionSystem" type="Node" parent="."]
 script = ExtResource("4")
 
-[node name="BuildingPlacer" type="Node" parent="."]
+[node name="AIController" type="Node" parent="."]
 script = ExtResource("5")
 
-[node name="UnitProduction" type="Node" parent="."]
+[node name="BuildingPlacer" type="Node" parent="."]
 script = ExtResource("6")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="UnitProduction" type="Node" parent="."]
+script = ExtResource("7")
+
+[node name="Camera2D" type="Camera2D" parent="." groups=["camera"]]
 position = Vector2(1024, 768)
 zoom = Vector2(0.8, 0.8)
 limit_left = 0
@@ -40,6 +52,9 @@ limit_bottom = 4096
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
+[node name="DamageNumbers" type="CanvasLayer" parent="CanvasLayer"]
+script = ExtResource("res://scripts/systems/damage_numbers.gd")
+
 [node name="UI" type="Control" parent="CanvasLayer"]
 layout_mode = 3
 anchors_preset = 15
@@ -48,33 +63,70 @@ anchor_bottom = 1.0
 
 [node name="TopBar" type="Panel" parent="CanvasLayer/UI"]
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -50.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="CreditsLabel" type="Label" parent="CanvasLayer/UI/TopBar"]
-layout_mode = 1
-anchors_preset = 0
-offset_left = 20.0
-offset_top = 10.0
-offset_right = 200.0
-offset_bottom = 40.0
-text = "Credits: 1000"
-
-[node name="HotkeyHints" type="Label" parent="CanvasLayer/UI"]
-layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -400.0
+offset_left = -250.0
 offset_top = 10.0
 offset_right = -10.0
-offset_bottom = 150.0
+offset_bottom = 60.0
 grow_horizontal = 0
-text = "Q:发电厂 W:兵营 E:工厂 R:机场
-1:步兵 2:轻坦 3:重坦
-空格:暂停 ESC:取消"
+
+[node name="CreditsLabel" type="Label" parent="CanvasLayer/UI/TopBar"]
+layout_mode = 1
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 230.0
+offset_bottom = 40.0
+text = "Credits: 1000
+
+Units: 0"
+
+[node name="HotkeyHints" type="Panel" parent="CanvasLayer/UI"]
+layout_mode = 1
+anchors_preset = 2
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -320.0
+offset_top = -180.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Label" type="Label" parent="CanvasLayer/UI/HotkeyHints"]
+layout_mode = 1
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 300.0
+offset_bottom = 160.0
+text = "【快捷键】
+Q: 发电厂(300) W: 兵营(500)
+E: 工厂(800) R: 机场(1000)
+1: 步兵 2: 轻坦 3: 重坦
+A: 攻击移动 右键: 移动
+空格: 暂停 ESC: 取消"
+
+[node name="Minimap" type="Control" parent="CanvasLayer/UI"]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 150.0
+offset_bottom = 150.0
+custom_minimum_size = Vector2(140, 140)
+
+[node name="MinimapBG" type="ColorRect" parent="CanvasLayer/UI/Minimap"]
+layout_mode = 1
+offset_right = 140.0
+offset_bottom = 140.0
+color = Color(0.2, 0.2, 0.3, 0.8)
+
+[node name="MinimapLabel" type="Label" parent="CanvasLayer/UI/Minimap"]
+layout_mode = 1
+offset_right = 140.0
+offset_bottom = 20.0
+text = "小地图"
+horizontal_alignment = 1
