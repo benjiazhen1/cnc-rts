@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "/root/.openclaw/workspace/cnc-rts/**"
+    ]
+  }
+}
