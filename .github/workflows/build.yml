@@ -1,4 +1,4 @@
-name: Build Godot Project
+name: Build Command & War
 
 on:
   push:
@@ -6,24 +6,91 @@ on:
   pull_request:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    container:
-      image: barthel/godot-export:4.2.2
-    
+  build-windows:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       
-      - name: Build for Windows
-        run: |
-          mkdir -p builds
-          godot4 --headless --export-release "Windows Desktop" builds/game.exe
+      - name: Setup Godot
+        uses: barthel/godot-export@v1
+        with:
+          godot-version: 4.2.2
+          godot-release-channel: stable
       
-      - name: Build for HTML5
+      - name: Build Windows EXE
+        run: |
+          godot4 --headless --export-release "Windows Desktop" builds/CommandAndWar.exe
+      
+      - name: Build HTML5
         run: |
           godot4 --headless --export-release "HTML5" builds/index.html
       
       - uses: actions/upload-artifact@v4
         with:
-          name: builds
+          name: game-builds
           path: builds/
+          retention-days: 30
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Godot
+        uses: barthel/godot-export@v1
+        with:
+          godot-version: 4.2.2
+      
+      - name: Build Linux
+        run: |
+          mkdir -p builds
+          godot4 --headless --export-release "Linux/X11" builds/CommandAndWar.x86_64
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-build
+          path: builds/
+
+  release:
+    needs: [build-windows]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download Windows Build
+        uses: actions/download-artifact@v4
+        with:
+          name: game-builds
+          path: release/
+      
+      - name: Create Steam Build Package
+        run: |
+          mkdir -p steam_build
+          cp -r release/* steam_build/
+          cp -r steam-sdk steam_build/ 2>/dev/null || true
+          tar -czvf CommandAndWar-v${{ github.ref_name }}-steam.tar.gz steam_build/
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: CommandAndWar-v${{ github.ref_name }}-steam.tar.gz
+          draft: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: GDScript Lint
+        run: |
+          pip install gdtoolkit
+          find . -name "*.gd" -exec gdformat --check {} \;
